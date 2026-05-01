@@ -1,16 +1,16 @@
 package main;
 
 /**
- * Checks the alignment of DNA sequences
+ * Checks the alignment of two DNA sequences
  */
 public class AlignmentChecker
 {
-    private final int matchBonus;
-    private final int mismatchPenalty;
-    private final int gapPenalty;
-    private int[][]   editDistance;
-    private String    sequence1;
-    private String    sequence2;
+    private final int m_matchBonus;
+    private final int m_mismatchPenalty;
+    private final int m_gapPenalty;
+    private int[][]   m_editDistance;
+    private String    m_sequence1;
+    private String    m_sequence2;
 
     /**
      * Default AlignmentChecker constructor.
@@ -33,9 +33,9 @@ public class AlignmentChecker
      */
     public AlignmentChecker(int matchBonus, int mismatchPenalty, int gapPenalty)
     {
-        this.matchBonus      = matchBonus;
-        this.mismatchPenalty = mismatchPenalty;
-        this.gapPenalty      = gapPenalty;
+        m_matchBonus      = matchBonus;
+        m_mismatchPenalty = mismatchPenalty;
+        m_gapPenalty      = gapPenalty;
     }
 
     /**
@@ -43,6 +43,8 @@ public class AlignmentChecker
      * @param sequence1 the first DNA sequence
      * @param sequence2 the second DNA sequence
      * @throws IllegalArgumentException throws exception if one or both sequences are null or blank
+     * @return returns the alignment score and the two DNA sequences with gaps inserted in the appropriate places to
+     * create the alignment score
      */
     public String[] checkAlignment(String sequence1, String sequence2) throws IllegalArgumentException
     {
@@ -50,23 +52,24 @@ public class AlignmentChecker
 
         if (sequence1 == null || sequence2 == null || sequence1.isBlank() || sequence2.isBlank())
         {
-            throw new IllegalArgumentException("AlignmentChecker: can't align null sequence");
+            throw new IllegalArgumentException("AlignmentChecker: can't align null or blank sequence");
         }
 
-        this.sequence1  = sequence1.trim();
-        this.sequence2  = sequence2.trim();
+        m_sequence1     = sequence1.trim();
+        m_sequence2     = sequence2.trim();
 
-        sequence1Length = this.sequence1.length();
-        sequence2Length = this.sequence2.length();
+        sequence1Length = m_sequence1.length();
+        sequence2Length = m_sequence2.length();
 
         calculateEditDistances();
         createAlignedStrings();
 
-        return new String[] {
-                                "Alignment Score: " + this.editDistance[sequence1Length][sequence2Length],
-                                this.sequence1,
-                                this.sequence2
-                            };
+        return new String[]
+        {
+            "Alignment Score: " + m_editDistance[sequence1Length][sequence2Length],
+            m_sequence1,
+            m_sequence2
+        };
     }
 
     /** TODO: add a way to track where answer for each cell came from
@@ -80,20 +83,20 @@ public class AlignmentChecker
         int     matchMismatch, gapSeq1, gapSeq2;
         int[][] editDistance;
 
-        seq1SideLength = this.sequence1.length() + 1;
-        seq2SideLength = this.sequence2.length() + 1;
+        seq1SideLength = m_sequence1.length() + 1;
+        seq2SideLength = m_sequence2.length() + 1;
 
         editDistance = new int[seq1SideLength][seq2SideLength];
 
         // fill in the edit distances for the 1st column and 1st row
         for (seq1Idx = 1; seq1Idx < seq1SideLength; seq1Idx++)
         {
-            editDistance[0][seq1Idx] = seq1Idx * this.gapPenalty;
+            editDistance[0][seq1Idx] = seq1Idx * m_gapPenalty;
         }
 
         for (seq2Idx = 1; seq2Idx < seq2SideLength; seq2Idx++)
         {
-            editDistance[seq2Idx][0] = seq2Idx * this.gapPenalty;
+            editDistance[seq2Idx][0] = seq2Idx * m_gapPenalty;
         }
 
         // fill in the rest of the edit distances
@@ -101,12 +104,12 @@ public class AlignmentChecker
         {
             for (seq2Idx = 1; seq2Idx < seq2SideLength; seq2Idx++)
             {
-                char1         = this.sequence1.charAt(seq1Idx - 1);
-                char2         = this.sequence2.charAt(seq2Idx - 1);
+                char1         = m_sequence1.charAt(seq1Idx - 1);
+                char2         = m_sequence2.charAt(seq2Idx - 1);
                 matchMismatch = editDistance[seq2Idx - 1][seq1Idx - 1] +
                                 cost(char1, char2);
-                gapSeq1       = this.gapPenalty + editDistance[seq2Idx][seq1Idx - 1];
-                gapSeq2       = this.gapPenalty + editDistance[seq2Idx - 1][seq1Idx];
+                gapSeq1       = m_gapPenalty + editDistance[seq2Idx][seq1Idx - 1];
+                gapSeq2       = m_gapPenalty + editDistance[seq2Idx - 1][seq1Idx];
 
                 if ((matchMismatch >= gapSeq1) && (matchMismatch >= gapSeq2))
                 {
@@ -126,7 +129,7 @@ public class AlignmentChecker
             }
         }
 
-        this.editDistance = editDistance;
+        m_editDistance = editDistance;
     }
 
     /**
@@ -139,10 +142,10 @@ public class AlignmentChecker
     {
         if (char1 == char2)
         {
-            return this.matchBonus;
+            return m_matchBonus;
         }
 
-        return this.mismatchPenalty;
+        return m_mismatchPenalty;
     }
 
     /** TODO: finish createAlignedStrings
@@ -158,8 +161,8 @@ public class AlignmentChecker
     @Override
     public String toString()
     {
-        return "AlignmentChecker.  Match Bonus: " + this.matchBonus +
-                ",  Mismatch Penalty: " + this.mismatchPenalty +
-                ",  Gap Penalty: " + this.gapPenalty;
+        return "AlignmentChecker.  Match Bonus: " + m_matchBonus +
+                ",  Mismatch Penalty: "           + m_mismatchPenalty +
+                ",  Gap Penalty: "                + m_gapPenalty;
     }
 }
