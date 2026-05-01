@@ -96,9 +96,9 @@ public class Main
             result[1] = inputFileReader.nextLine();
 
             // Modifiers
-            result[2] = inputFileReader.nextLine().trim().split("\\s+")[2];
-            result[3] = inputFileReader.nextLine().trim().split("\\s+")[2];
-            result[4] = inputFileReader.nextLine().trim().split("\\s+")[2];
+            result[2] = inputFileReader.nextLine().trim().split("\\s+")[1];
+            result[3] = inputFileReader.nextLine().trim().split("\\s+")[1];
+            result[4] = inputFileReader.nextLine().trim().split("\\s+")[1];
 
             return result;
         }
@@ -119,9 +119,9 @@ public class Main
     {
         try (PrintStream outputFileWriter = new PrintStream(outputFileName))
         {
-            outputFileWriter.println(alignmentData.alignmentScore);
-            outputFileWriter.println(alignmentData.sequence1);
-            outputFileWriter.println(alignmentData.sequence2);
+            outputFileWriter.println(alignmentData.alignmentScore());
+            outputFileWriter.println(alignmentData.sequence1());
+            outputFileWriter.println(alignmentData.sequence2());
         }
         catch (FileNotFoundException caught)
         {

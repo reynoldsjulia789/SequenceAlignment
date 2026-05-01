@@ -253,24 +253,9 @@ public class AlignmentChecker
     /**
      * Used to return the results of an alignment calculation to the caller. Contains the int alignment score and
      * sequence 1 & 2 with gaps inserted as needed to get that score.
+     * @param alignmentScore the score of the optimal alignment of sequence1 and sequence2
+     * @param sequence1 the first DNA sequence with gaps inserted as needed to get the associated score
+     * @param sequence2 the second DNA sequence with gaps inserted as needed to get the associated score
      */
-    public static class Results
-    {
-        public final int    alignmentScore;
-        public final String sequence1;
-        public final String sequence2;
-
-        /**
-         * Results constructor. Adds the alignment score, sequence1 and sequence2 to the results
-         * @param alignmentScore the score of the optimal alignment of sequence1 and sequence2
-         * @param sequence1 the first DNA sequence with gaps inserted as needed to get the associated score
-         * @param sequence2 the second DNA sequence with gaps inserted as needed to get the associated score
-         */
-        Results(int alignmentScore, String sequence1, String sequence2)
-        {
-            this.alignmentScore = alignmentScore;
-            this.sequence1      = sequence1;
-            this.sequence2      = sequence2;
-        }
-    }
+    public record Results(int alignmentScore, String sequence1, String sequence2) {}
 }
