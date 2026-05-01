@@ -5,8 +5,36 @@ import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.util.Scanner;
 
+/**
+ * Handles reading from the input file, calling the AlignmentChecker methods, and writing to the output file
+ */
 public class Main
 {
+    /**
+     * Main method.
+     * <p>
+     * Executes the appropriate methods to determine the optimal alignment of two DNA sequences.
+     * </p>
+     * <p>
+     * The sequences to check must be in a file called input.txt in the following format:
+     * Line 1: The characters of the first DNA sequence, with no leading or trailing whitespace. Characters are all
+     * uppercase and members of the set {A, C, G, T}
+     * Line 2: The characters of the second DNA sequence, with no leading or trailing whitespace. Characters are all
+     * uppercase and members of the set {A, C, G, T}
+     * Line 3: The exact text "Match %d" where %d is an integer representing the score of a match bonus
+     * Line 4: The exact text "Mismatch %d" where %d is an integer representing the score of a mismatch penalty
+     * Line 5: The exact text "Gap %d" where %d is an integer representing the score of a gap penalty
+     * </p>
+     * <p>
+     * The results will be output to a file called output.txt in the following format:
+     * Line 1: The score of the optimal alignment
+     * Line 2: The characters of the first string from the input file, with gaps ("-") added where necessary to
+     * create the optimal alignment score
+     * Line 3: The characters of the second string from the input file, with gaps ("-") added where necessary to
+     * create the optimal alignment score
+     * </p>
+     * @param args args
+     */
     public static void main(String[] args)
     {
         long                startTime, endTime;
@@ -47,7 +75,7 @@ public class Main
         System.out.println("End");
     }
 
-    /**
+    /** TODO: Verify correct input file formatting while reading
      * Reads DNA sequences and alignment modifiers from an input file, returning the data as a String[]
      * @param inputFileName the name of the input file to read from
      * @return returns the data from the input file as a String[]
