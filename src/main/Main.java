@@ -37,6 +37,7 @@ public class Main
      */
     public static void main(String[] args)
     {
+        int                 matchBonus, mismatchPenalty, gapPenalty;
         long                startTime, endTime;
         AlignmentChecker    alignmentChecker;
         String              inputFileName, outputFileName;
@@ -52,13 +53,13 @@ public class Main
 
         System.out.println("Successfully read input file");
 
-        sequence1           = inputFile[0].trim().toUpperCase();
-        sequence2           = inputFile[1].trim().toUpperCase();
-        alignmentChecker    = new AlignmentChecker(
-                                                    Integer.parseInt(inputFile[2].trim()),
-                                                    Integer.parseInt(inputFile[3].trim()),
-                                                    Integer.parseInt(inputFile[4].trim())
-                                                  );
+        sequence1        = inputFile[0].trim().toUpperCase();
+        sequence2        = inputFile[1].trim().toUpperCase();
+        matchBonus       = Integer.parseInt(inputFile[2].trim());
+        mismatchPenalty  = Integer.parseInt(inputFile[3].trim());
+        gapPenalty       = Integer.parseInt(inputFile[4].trim());
+
+        alignmentChecker = new AlignmentChecker(matchBonus, mismatchPenalty, gapPenalty);
 
         System.out.println("Initialized AlignmentChecker");
 
@@ -102,7 +103,7 @@ public class Main
         }
         catch (FileNotFoundException caught)
         {
-            throw new IllegalArgumentException("input file was not found or was unable to be accessed");
+            throw new IllegalArgumentException("input file was not found or was unable to be accessed", caught);
         }
     }
 
@@ -116,14 +117,14 @@ public class Main
     {
         try (PrintStream outputFileWriter = new PrintStream(outputFileName))
         {
-            for(String line : alignmentData)
+            for (String line : alignmentData)
             {
                 outputFileWriter.println(line);
             }
         }
         catch (FileNotFoundException caught)
         {
-            throw new IllegalArgumentException("output file was not found or was unable to be written to");
+            throw new IllegalArgumentException("output file was not found or was unable to be written to", caught);
         }
     }
 }
