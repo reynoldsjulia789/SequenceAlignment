@@ -24,7 +24,7 @@ public class AlignmentCheckerTest
             results = test.checkAlignment("AGCGA", "ACGAA");
 
             assertEquals(0, results.alignmentScore(), "Alignment Score");
-            assertEquals("AGCGA-", results.sequence1(), "Sequence 1");
+            assertEquals("AGCG-A", results.sequence1(), "Sequence 1");
             assertEquals("A-CGAA", results.sequence2(), "Sequence 2");
         }
 
@@ -41,6 +41,21 @@ public class AlignmentCheckerTest
             assertEquals(1, results.alignmentScore(), "Alignment Score");
             assertEquals("AGTTA", results.sequence1(), "Sequence 1");
             assertEquals("AGAGA", results.sequence2(), "Sequence 2");
+        }
+
+        @Test
+        @DisplayName("finds best alignment of ACGT and GT")
+        public void test3()
+        {
+            AlignmentChecker         test;
+            AlignmentChecker.Results results;
+
+            test    = new AlignmentChecker();
+            results = test.checkAlignment("ACGT", "GT");
+
+            assertEquals(-2, results.alignmentScore(), "Alignment Score");
+            assertEquals("ACGT", results.sequence1(), "Sequence 1");
+            assertEquals("--GT", results.sequence2(), "Sequence 2");
         }
     }
 }

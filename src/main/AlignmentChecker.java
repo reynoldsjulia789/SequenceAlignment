@@ -166,34 +166,34 @@ public class AlignmentChecker
     private String[] createAlignedStrings(String sequence1, String sequence2, Cell[][] alignment)
             throws IllegalArgumentException
     {
-        int            idx1, idx2;
+        int            rowIdx, colIdx;
         Cell.Backtrace backtrace;
         StringBuilder  builder1, builder2;
 
         builder1 = new StringBuilder(sequence1);
         builder2 = new StringBuilder(sequence2);
 
-        idx1     = sequence1.length();
-        idx2     = sequence2.length();
+        colIdx = sequence1.length();
+        rowIdx = sequence2.length();
 
-        while ((idx1 != 0) && (idx2 != 0))
+        while ((rowIdx != 0) || (colIdx != 0))
         {
-            backtrace = alignment[idx1][idx2].backtrace;
+            backtrace = alignment[rowIdx][colIdx].backtrace;
 
             if (backtrace == Cell.Backtrace.DIAGONAL)
             {
-                idx1 -= 1;
-                idx2 -= 1;
+                rowIdx -= 1;
+                colIdx -= 1;
             }
             else if (backtrace == Cell.Backtrace.DOWN)
             {
-                builder1.insert(idx1, "-");
-                idx2 -= 1;
+                builder1.insert(rowIdx, "-");
+                rowIdx -= 1;
             }
             else if (backtrace == Cell.Backtrace.LEFT)
             {
-                builder2.insert(idx2, "-");
-                idx1 -= 1;
+                builder2.insert(colIdx, "-");
+                colIdx -= 1;
             }
             else // backtrace is null
             {
