@@ -170,30 +170,37 @@ public class AlignmentChecker
         Cell.Backtrace backtrace;
         StringBuilder  builder1, builder2;
 
-        builder1 = new StringBuilder(sequence1);
-        builder2 = new StringBuilder(sequence2);
+        builder1 = new StringBuilder();
+        builder2 = new StringBuilder();
 
-        colIdx = sequence1.length();
-        rowIdx = sequence2.length();
+        rowIdx = sequence1.length();
+        colIdx = sequence2.length();
 
-        while ((rowIdx != 0) || (colIdx != 0))
+        while ((rowIdx > 0) || (colIdx > 0))
         {
             backtrace = alignment[rowIdx][colIdx].backtrace;
 
             if (backtrace == Cell.Backtrace.DIAGONAL)
             {
-                rowIdx -= 1;
-                colIdx -= 1;
+                builder1.append(sequence1.charAt(rowIdx - 1));
+                builder2.append(sequence2.charAt(colIdx - 1));
+
+                rowIdx--;
+                colIdx--;
             }
             else if (backtrace == Cell.Backtrace.DOWN)
             {
-                builder1.insert(rowIdx, "-");
-                rowIdx -= 1;
+                builder1.append(sequence1.charAt(rowIdx - 1));
+                builder2.append("-");
+
+                rowIdx--;
             }
             else if (backtrace == Cell.Backtrace.LEFT)
             {
-                builder2.insert(colIdx, "-");
-                colIdx -= 1;
+                builder1.append("-");
+                builder2.append(sequence2.charAt(colIdx - 1));
+
+                colIdx--;
             }
             else // backtrace is null
             {
@@ -202,7 +209,7 @@ public class AlignmentChecker
             }
         }
 
-        return new String[] {builder1.toString(), builder2.toString()};
+        return new String[] {builder1.reverse().toString(), builder2.reverse().toString()};
     }
 
     @Override
