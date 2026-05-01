@@ -57,5 +57,20 @@ public class AlignmentCheckerTest
             assertEquals("ACGT", results.sequence1(), "Sequence 1");
             assertEquals("--GT", results.sequence2(), "Sequence 2");
         }
+
+        @Test
+        @DisplayName("finds best alignment of two long sequences")
+        public void test4()
+        {
+            AlignmentChecker         test;
+            AlignmentChecker.Results results;
+
+            test    = new AlignmentChecker();
+            results = test.checkAlignment("GTGTGTGTGGGTGCACATTTGTGTGTGTGTGCGCCTGTGTGTGTGGGTGCCTGTGTGTGT", "GTGTGTGTGGAAGTGAGTTCATCTGTGTGTGCACATGTGTGTGCATGCATGCATGTGT");
+
+            assertEquals(22, results.alignmentScore(), "Alignment Score");
+            assertEquals("GTGTGTGTGGGTGCACATTTGTGTGTGTGTGCGCCTGTGTGTGTGGGTGCCTGTGTGTGT", results.sequence1(), "Sequence 1");
+            assertEquals("GTGTGTGTGGAAGTGAGTTCATCTGTGTGTGC-AC-ATGTGTGTGCATGCATGCATGTGT", results.sequence2(), "Sequence 2");
+        }
     }
 }
