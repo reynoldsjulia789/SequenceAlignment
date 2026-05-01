@@ -86,7 +86,7 @@ public class AlignmentChecker
         seq1SideLength = m_sequence1.length() + 1;
         seq2SideLength = m_sequence2.length() + 1;
 
-        editDistance = new int[seq1SideLength][seq2SideLength];
+        editDistance = new int[seq2SideLength][seq1SideLength];
 
         // fill in the edit distances for the 1st column and 1st row
         for (seq1Idx = 1; seq1Idx < seq1SideLength; seq1Idx++)
