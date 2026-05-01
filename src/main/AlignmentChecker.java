@@ -5,10 +5,12 @@ package main;
  */
 public class AlignmentChecker
 {
-    // modifiers are public so they can be accessed and changed from outside the class
-    public  int     matchBonus, mismatchPenalty, gapPenalty;
-    private int[][] editDistance;
-    private String  sequence1, sequence2;
+    private final int matchBonus;
+    private final int mismatchPenalty;
+    private final int gapPenalty;
+    private int[][]   editDistance;
+    private String    sequence1;
+    private String    sequence2;
 
     /**
      * Default AlignmentChecker constructor.
@@ -17,9 +19,7 @@ public class AlignmentChecker
      */
     public AlignmentChecker()
     {
-        this.matchBonus      =  2;
-        this.mismatchPenalty = -1;
-        this.gapPenalty      = -2;
+        this(2, -1, -2);
     }
 
     /**
@@ -74,6 +74,7 @@ public class AlignmentChecker
      */
     private void calculateEditDistances()
     {
+        char    char1, char2;
         int     seq1Idx, seq2Idx;
         int     seq1SideLength, seq2SideLength;
         int     matchMismatch, gapSeq1, gapSeq2;
@@ -100,20 +101,19 @@ public class AlignmentChecker
         {
             for (seq2Idx = 1; seq2Idx < seq2SideLength; seq2Idx++)
             {
-                matchMismatch = cost(
-                                        this.sequence1.charAt(seq1Idx - 1),
-                                        this.sequence2.charAt(seq2Idx - 1),
-                                        editDistance[seq2Idx - 1][seq1Idx - 1]
-                                    );
+                char1         = this.sequence1.charAt(seq1Idx - 1);
+                char2         = this.sequence2.charAt(seq2Idx - 1);
+                matchMismatch = editDistance[seq2Idx - 1][seq1Idx - 1] +
+                                cost(char1, char2);
                 gapSeq1       = this.gapPenalty + editDistance[seq2Idx][seq1Idx - 1];
                 gapSeq2       = this.gapPenalty + editDistance[seq2Idx - 1][seq1Idx];
 
-                if (matchMismatch >= gapSeq1 && matchMismatch >= gapSeq2)
+                if ((matchMismatch >= gapSeq1) && (matchMismatch >= gapSeq2))
                 {
                     editDistance[seq2Idx][seq1Idx] = matchMismatch;
                     // TODO: store that we are going with match/mismatch
                 }
-                else if (gapSeq1 > matchMismatch && gapSeq1 >= gapSeq2)
+                else if ((gapSeq1 > matchMismatch) && (gapSeq1 >= gapSeq2))
                 {
                     editDistance[seq2Idx][seq1Idx] = gapSeq1;
                     // TODO: store that we are going with gapSeq1
@@ -135,14 +135,14 @@ public class AlignmentChecker
      * @param char2 the second character to compare
      * @return returns the cost of considering a match/mutation between the two characters
      */
-    private int cost(char char1, char char2, int total)
+    private int cost(char char1, char char2)
     {
         if (char1 == char2)
         {
-            return total + this.matchBonus;
+            return this.matchBonus;
         }
 
-        return total + this.mismatchPenalty;
+        return this.mismatchPenalty;
     }
 
     /** TODO: finish createAlignedStrings
