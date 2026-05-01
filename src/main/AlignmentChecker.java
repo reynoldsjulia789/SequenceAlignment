@@ -138,14 +138,14 @@ public class AlignmentChecker
     }
 
     /**
-     * Determines if two chars match or not and calculates the associated cost
+     * Determines if two chars match or not (not case-sensitive) and calculates the associated cost
      * @param char1 the first character to compare
      * @param char2 the second character to compare
      * @return returns the cost of considering a match/mutation between the two characters
      */
     private int cost(char char1, char char2)
     {
-        if (char1 == char2)
+        if (Character.toUpperCase(char1) == Character.toUpperCase(char2))
         {
             return m_matchBonus;
         }
