@@ -11,12 +11,12 @@ public class AlignmentChecker
 
     /**
      * Default AlignmentChecker constructor.
-     * Uses the following modifiers by default: a match bonus of +2, a mismatch penalty of -1, and a gap penalty of -2.
+     * Uses the following modifiers by default: a match bonus of +1, a mismatch penalty of -1, and a gap penalty of -2.
      * Sequences are null by default
      */
     public AlignmentChecker()
     {
-        this(2, -1, -2);
+        this(1, -1, -2);
     }
 
     /**
@@ -67,7 +67,8 @@ public class AlignmentChecker
         (
             alignment[sequence1Length][sequence2Length].value,
             updatedSequences[0],
-            updatedSequences[1]
+            updatedSequences[1],
+            alignment
         );
     }
 
@@ -90,19 +91,19 @@ public class AlignmentChecker
         seq1SideLength  = sequence1.length() + 1;
         seq2SideLength  = sequence2.length() + 1;
 
-        alignment       = new Cell[seq2SideLength][seq1SideLength];
+        alignment       = new Cell[seq1SideLength][seq2SideLength];
 
         alignment[0][0] = new Cell();
 
         // fill in the edit distances for the 1st column and 1st row
         for (seq1Idx = 1; seq1Idx < seq1SideLength; seq1Idx++)
         {
-            alignment[0][seq1Idx] = new Cell(seq1Idx * m_gapPenalty, Cell.BACKTRACE.LEFT);
+            alignment[seq1Idx][0] = new Cell(seq1Idx * m_gapPenalty, Cell.Backtrace.DOWN);
         }
 
         for (seq2Idx = 1; seq2Idx < seq2SideLength; seq2Idx++)
         {
-            alignment[seq2Idx][0] = new Cell(seq2Idx * m_gapPenalty, Cell.BACKTRACE.DOWN);
+            alignment[0][seq2Idx] = new Cell(seq2Idx * m_gapPenalty, Cell.Backtrace.LEFT);
         }
 
         // fill in the rest of the edit distances
@@ -112,22 +113,23 @@ public class AlignmentChecker
             {
                 char1         = sequence1.charAt(seq1Idx - 1);
                 char2         = sequence2.charAt(seq2Idx - 1);
-                matchMismatch = alignment[seq2Idx - 1][seq1Idx - 1].value +
+
+                matchMismatch = alignment[seq1Idx - 1][seq2Idx - 1].value +
                                 cost(char1, char2);
-                gapSeq1       = m_gapPenalty + alignment[seq2Idx][seq1Idx - 1].value;
-                gapSeq2       = m_gapPenalty + alignment[seq2Idx - 1][seq1Idx].value;
+                gapSeq1       = m_gapPenalty + alignment[seq1Idx - 1][seq2Idx].value;
+                gapSeq2       = m_gapPenalty + alignment[seq1Idx][seq2Idx - 1].value;
 
                 if ((matchMismatch >= gapSeq1) && (matchMismatch >= gapSeq2))
                 {
-                    alignment[seq2Idx][seq1Idx] = new Cell(matchMismatch, Cell.BACKTRACE.DIAGONAL);
+                    alignment[seq1Idx][seq2Idx] = new Cell(matchMismatch, Cell.Backtrace.DIAGONAL);
                 }
-                else if ((gapSeq1 > matchMismatch) && (gapSeq1 >= gapSeq2))
+                else if ((gapSeq1 > matchMismatch) && (gapSeq1 > gapSeq2))
                 {
-                    alignment[seq2Idx][seq1Idx] = new Cell(gapSeq1, Cell.BACKTRACE.DOWN);
+                    alignment[seq1Idx][seq2Idx] = new Cell(gapSeq1, Cell.Backtrace.DOWN);
                 }
                 else
                 {
-                    alignment[seq2Idx][seq1Idx] = new Cell(gapSeq2, Cell.BACKTRACE.LEFT);
+                    alignment[seq1Idx][seq2Idx] = new Cell(gapSeq2, Cell.Backtrace.LEFT);
                 }
             }
         }
@@ -165,7 +167,7 @@ public class AlignmentChecker
             throws IllegalArgumentException
     {
         int            idx1, idx2;
-        Cell.BACKTRACE backtrace;
+        Cell.Backtrace backtrace;
         StringBuilder  builder1, builder2;
 
         builder1 = new StringBuilder(sequence1);
@@ -178,17 +180,17 @@ public class AlignmentChecker
         {
             backtrace = alignment[idx1][idx2].backtrace;
 
-            if (backtrace == Cell.BACKTRACE.DIAGONAL)
+            if (backtrace == Cell.Backtrace.DIAGONAL)
             {
                 idx1 -= 1;
                 idx2 -= 1;
             }
-            else if (backtrace == Cell.BACKTRACE.DOWN)
+            else if (backtrace == Cell.Backtrace.DOWN)
             {
                 builder1.insert(idx1, "-");
                 idx2 -= 1;
             }
-            else if (backtrace == Cell.BACKTRACE.LEFT)
+            else if (backtrace == Cell.Backtrace.LEFT)
             {
                 builder2.insert(idx2, "-");
                 idx1 -= 1;
@@ -214,15 +216,15 @@ public class AlignmentChecker
     /**
      * A class to be used as the cells in a 2D array grid to store the value of the cell and where that value came from
      */
-    private static class Cell
+    public static class Cell
     {
-        int value;
-        BACKTRACE backtrace;
+        final int value;
+        final Backtrace backtrace;
 
         /**
          * enum denoting the options for where the cell calculation came from
          */
-        enum BACKTRACE
+        enum Backtrace
         {
             DOWN,               // gap sequence 1
             DIAGONAL,           // match/mismatch
@@ -243,10 +245,31 @@ public class AlignmentChecker
          * @param value the alignment score
          * @param backtrace an enum indicating where the score was calculated from
          */
-        Cell(int value, BACKTRACE backtrace)
+        Cell(int value, Backtrace backtrace)
         {
             this.value     = value;
             this.backtrace = backtrace;
+        }
+
+        @Override
+        public String toString()
+        {
+            if (this.backtrace == Backtrace.LEFT)
+            {
+                return "[_ " + this.value + "]";
+            }
+
+            if (this.backtrace == Backtrace.DOWN)
+            {
+                return "[| " + this.value + "]";
+            }
+
+            if (this.backtrace == Backtrace.DIAGONAL)
+            {
+                return "[\\ " + this.value + "]";
+            }
+
+            return "[X " + this.value + "]";
         }
     }
 
@@ -256,6 +279,7 @@ public class AlignmentChecker
      * @param alignmentScore the score of the optimal alignment of sequence1 and sequence2
      * @param sequence1 the first DNA sequence with gaps inserted as needed to get the associated score
      * @param sequence2 the second DNA sequence with gaps inserted as needed to get the associated score
+     * @param alignmentData the grid of alignment scores
      */
-    public record Results(int alignmentScore, String sequence1, String sequence2) {}
+    public record Results(int alignmentScore, String sequence1, String sequence2, Cell[][] alignmentData) {}
 }

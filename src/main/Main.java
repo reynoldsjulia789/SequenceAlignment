@@ -68,7 +68,23 @@ public class Main
         results          = alignmentChecker.checkAlignment(sequence1, sequence2);
         endTime          = System.currentTimeMillis();
 
-        System.out.println("Calculated optimal alignment");
+        System.out.println("Calculated optimal alignment: " + results.alignmentScore());
+
+        // Print Alignment
+        for (AlignmentChecker.Cell[] row : results.alignmentData())
+        {
+            for (AlignmentChecker.Cell cell : row)
+            {
+                System.out.print(cell.toString());
+                System.out.print("\t");
+            }
+
+            System.out.println();
+        }
+
+        System.out.println(results.sequence1());
+        System.out.println(results.sequence2());
+
         System.out.println("Time taken (ms):  " + (endTime - startTime));
 
         printToOutputFile(outputFileName, results);
@@ -77,7 +93,7 @@ public class Main
         System.out.println("End");
     }
 
-    /** TODO: Verify correct input file formatting while reading
+    /** TODO Eventually: Verify correct input file formatting while reading
      * Reads DNA sequences and alignment modifiers from an input file, returning the data as a String[]
      * @param inputFileName the name of the input file to read from
      * @return returns the data from the input file as a String[]

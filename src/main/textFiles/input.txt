@@ -1,5 +1,5 @@
 ACGAA
 AGCGA
-Match 2
+Match 1
 Mismatch -1
 Gap -2

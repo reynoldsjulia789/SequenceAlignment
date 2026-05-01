@@ -24,8 +24,8 @@ public class AlignmentCheckerTest
             results = test.checkAlignment("AGCGA", "ACGAA");
 
             assertEquals(0, results.alignmentScore(), "Alignment Score");
-            assertEquals("A-CGAA", results.sequence1(), "Sequence 1");
-            assertEquals("AGCGA-", results.sequence2(), "Sequence 2");
+            assertEquals("AGCGA-", results.sequence1(), "Sequence 1");
+            assertEquals("A-CGAA", results.sequence2(), "Sequence 2");
         }
 
         @Test
@@ -38,7 +38,7 @@ public class AlignmentCheckerTest
             test    = new AlignmentChecker();
             results = test.checkAlignment("AGTTA", "AGAGA");
 
-            assertEquals(0, results.alignmentScore(), "Alignment Score");
+            assertEquals(1, results.alignmentScore(), "Alignment Score");
             assertEquals("AGTTA", results.sequence1(), "Sequence 1");
             assertEquals("AGAGA", results.sequence2(), "Sequence 2");
         }
