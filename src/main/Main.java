@@ -45,8 +45,8 @@ public class Main
         String                   sequence1, sequence2;
         String[]                 inputFile;
 
-        inputFileName  = "input.txt";
-        outputFileName = "output.txt";
+        inputFileName  = "src/main/textFiles/input.txt";
+        outputFileName = "src/main/textFiles/output.txt";
 
         System.out.println("Start");
 
