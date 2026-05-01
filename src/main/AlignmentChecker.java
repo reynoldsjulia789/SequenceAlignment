@@ -8,7 +8,7 @@ public class AlignmentChecker
     private final int m_matchBonus;
     private final int m_mismatchPenalty;
     private final int m_gapPenalty;
-    private int[][]   m_editDistance;
+    private Cell[][]  m_editDistance;
     private String    m_sequence1;
     private String    m_sequence2;
 
@@ -72,31 +72,33 @@ public class AlignmentChecker
         };
     }
 
-    /** TODO: add a way to track where answer for each cell came from
+    /**
      * Fills out the 2D edit distance array.
      */
     private void calculateEditDistances()
     {
-        char    char1, char2;
-        int     seq1Idx, seq2Idx;
-        int     seq1SideLength, seq2SideLength;
-        int     matchMismatch, gapSeq1, gapSeq2;
-        int[][] editDistance;
+        char     char1, char2;
+        int      seq1Idx, seq2Idx;
+        int      seq1SideLength, seq2SideLength;
+        int      matchMismatch, gapSeq1, gapSeq2;
+        Cell[][] editDistance;
 
         seq1SideLength = m_sequence1.length() + 1;
         seq2SideLength = m_sequence2.length() + 1;
 
-        editDistance = new int[seq2SideLength][seq1SideLength];
+        editDistance = new Cell[seq2SideLength][seq1SideLength];
+
+        editDistance[0][0] = new Cell(0, null);
 
         // fill in the edit distances for the 1st column and 1st row
         for (seq1Idx = 1; seq1Idx < seq1SideLength; seq1Idx++)
         {
-            editDistance[0][seq1Idx] = seq1Idx * m_gapPenalty;
+            editDistance[0][seq1Idx] = new Cell(seq1Idx * m_gapPenalty, Cell.BACKTRACE.LEFT);
         }
 
         for (seq2Idx = 1; seq2Idx < seq2SideLength; seq2Idx++)
         {
-            editDistance[seq2Idx][0] = seq2Idx * m_gapPenalty;
+            editDistance[seq2Idx][0] = new Cell(seq2Idx * m_gapPenalty, Cell.BACKTRACE.DOWN);
         }
 
         // fill in the rest of the edit distances
@@ -106,25 +108,22 @@ public class AlignmentChecker
             {
                 char1         = m_sequence1.charAt(seq1Idx - 1);
                 char2         = m_sequence2.charAt(seq2Idx - 1);
-                matchMismatch = editDistance[seq2Idx - 1][seq1Idx - 1] +
+                matchMismatch = editDistance[seq2Idx - 1][seq1Idx - 1].value +
                                 cost(char1, char2);
-                gapSeq1       = m_gapPenalty + editDistance[seq2Idx][seq1Idx - 1];
-                gapSeq2       = m_gapPenalty + editDistance[seq2Idx - 1][seq1Idx];
+                gapSeq1       = m_gapPenalty + editDistance[seq2Idx][seq1Idx - 1].value;
+                gapSeq2       = m_gapPenalty + editDistance[seq2Idx - 1][seq1Idx].value;
 
                 if ((matchMismatch >= gapSeq1) && (matchMismatch >= gapSeq2))
                 {
-                    editDistance[seq2Idx][seq1Idx] = matchMismatch;
-                    // TODO: store that we are going with match/mismatch
+                    editDistance[seq2Idx][seq1Idx] = new Cell(matchMismatch, Cell.BACKTRACE.DIAGONAL);
                 }
                 else if ((gapSeq1 > matchMismatch) && (gapSeq1 >= gapSeq2))
                 {
-                    editDistance[seq2Idx][seq1Idx] = gapSeq1;
-                    // TODO: store that we are going with gapSeq1
+                    editDistance[seq2Idx][seq1Idx] = new Cell(gapSeq1, Cell.BACKTRACE.DOWN);
                 }
                 else
                 {
-                    editDistance[seq2Idx][seq1Idx] = gapSeq2;
-                    // TODO: store that we are going with gapSeq2
+                    editDistance[seq2Idx][seq1Idx] = new Cell(gapSeq2, Cell.BACKTRACE.LEFT);
                 }
             }
         }
@@ -154,7 +153,7 @@ public class AlignmentChecker
      */
     private void createAlignedStrings()
     {
-        // save the characters of the strings with gaps ("-") added where necessary to create the optimal alignment score
+        // save the characters of the strings with gaps ("-") added where necessary to create the alignment score
 
     }
 
@@ -164,5 +163,30 @@ public class AlignmentChecker
         return "AlignmentChecker.  Match Bonus: " + m_matchBonus +
                 ",  Mismatch Penalty: "           + m_mismatchPenalty +
                 ",  Gap Penalty: "                + m_gapPenalty;
+    }
+
+    /**
+     * A class to be used as the cells in a 2D array grid to store the value of the cell and where that value came from
+     */
+    private class Cell
+    {
+        int value;
+        BACKTRACE backtrace;
+
+        /**
+         * enum denoting the options for where the cell calculation came from
+         */
+        enum BACKTRACE
+        {
+            DOWN,               // gap sequence 1
+            DIAGONAL,           // match/mismatch
+            LEFT                // gap sequence 2
+        }
+
+        Cell(int value, BACKTRACE backtrace)
+        {
+            this.value     = value;
+            this.backtrace = backtrace;
+        }
     }
 }
