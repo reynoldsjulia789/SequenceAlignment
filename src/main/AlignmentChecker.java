@@ -83,7 +83,7 @@ public class AlignmentChecker
     private Cell[][] calculateAlignment(final String sequence1, final String sequence2)
     {
         char     char1, char2;
-        int      seq1Idx, seq2Idx;
+        int      rowIdx, colIdx;
         int      seq1SideLength, seq2SideLength;
         int      matchMismatch, gapSeq1, gapSeq2;
         Cell[][] alignment;
@@ -91,45 +91,45 @@ public class AlignmentChecker
         seq1SideLength  = sequence1.length() + 1;
         seq2SideLength  = sequence2.length() + 1;
 
-        alignment       = new Cell[seq1SideLength][seq2SideLength];
+        alignment       = new Cell[seq1SideLength][seq2SideLength]; // row corresponds to sequence1, col to sequence2
 
         alignment[0][0] = new Cell();
 
         // fill in the edit distances for the 1st column and 1st row
-        for (seq1Idx = 1; seq1Idx < seq1SideLength; seq1Idx++)
+        for (rowIdx = 1; rowIdx < seq1SideLength; rowIdx++)
         {
-            alignment[seq1Idx][0] = new Cell(seq1Idx * m_gapPenalty, Cell.Backtrace.DOWN);
+            alignment[rowIdx][0] = new Cell(rowIdx * m_gapPenalty, Cell.Backtrace.DOWN);
         }
 
-        for (seq2Idx = 1; seq2Idx < seq2SideLength; seq2Idx++)
+        for (colIdx = 1; colIdx < seq2SideLength; colIdx++)
         {
-            alignment[0][seq2Idx] = new Cell(seq2Idx * m_gapPenalty, Cell.Backtrace.LEFT);
+            alignment[0][colIdx] = new Cell(colIdx * m_gapPenalty, Cell.Backtrace.LEFT);
         }
 
         // fill in the rest of the edit distances
-        for (seq1Idx = 1; seq1Idx < seq1SideLength; seq1Idx++)
+        for (rowIdx = 1; rowIdx < seq1SideLength; rowIdx++)
         {
-            for (seq2Idx = 1; seq2Idx < seq2SideLength; seq2Idx++)
+            for (colIdx = 1; colIdx < seq2SideLength; colIdx++)
             {
-                char1         = sequence1.charAt(seq1Idx - 1);
-                char2         = sequence2.charAt(seq2Idx - 1);
+                char1         = sequence1.charAt(rowIdx - 1);
+                char2         = sequence2.charAt(colIdx - 1);
 
-                matchMismatch = alignment[seq1Idx - 1][seq2Idx - 1].value +
+                matchMismatch = alignment[rowIdx - 1][colIdx - 1].value +
                                 cost(char1, char2);
-                gapSeq1       = m_gapPenalty + alignment[seq1Idx - 1][seq2Idx].value;
-                gapSeq2       = m_gapPenalty + alignment[seq1Idx][seq2Idx - 1].value;
+                gapSeq1       = m_gapPenalty + alignment[rowIdx - 1][colIdx].value;
+                gapSeq2       = m_gapPenalty + alignment[rowIdx][colIdx - 1].value;
 
                 if ((matchMismatch >= gapSeq1) && (matchMismatch >= gapSeq2))
                 {
-                    alignment[seq1Idx][seq2Idx] = new Cell(matchMismatch, Cell.Backtrace.DIAGONAL);
+                    alignment[rowIdx][colIdx] = new Cell(matchMismatch, Cell.Backtrace.DIAGONAL);
                 }
                 else if ((gapSeq1 > matchMismatch) && (gapSeq1 > gapSeq2))
                 {
-                    alignment[seq1Idx][seq2Idx] = new Cell(gapSeq1, Cell.Backtrace.DOWN);
+                    alignment[rowIdx][colIdx] = new Cell(gapSeq1, Cell.Backtrace.DOWN);
                 }
                 else
                 {
-                    alignment[seq1Idx][seq2Idx] = new Cell(gapSeq2, Cell.Backtrace.LEFT);
+                    alignment[rowIdx][colIdx] = new Cell(gapSeq2, Cell.Backtrace.LEFT);
                 }
             }
         }
