@@ -190,7 +190,7 @@ public class AlignmentChecker
             }
             else if (backtrace == Cell.BACKTRACE.LEFT)
             {
-                builder1.insert(idx2, "-");
+                builder2.insert(idx2, "-");
                 idx1 -= 1;
             }
             else // backtrace is null
