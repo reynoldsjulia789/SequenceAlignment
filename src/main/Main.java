@@ -37,12 +37,13 @@ public class Main
      */
     public static void main(String[] args)
     {
-        int                 matchBonus, mismatchPenalty, gapPenalty;
-        long                startTime, endTime;
-        AlignmentChecker    alignmentChecker;
-        String              inputFileName, outputFileName;
-        String              sequence1, sequence2;
-        String[]            inputFile, optimalAlignment;
+        int                      matchBonus, mismatchPenalty, gapPenalty;
+        long                     startTime, endTime;
+        AlignmentChecker         alignmentChecker;
+        AlignmentChecker.Results results;
+        String                   inputFileName, outputFileName;
+        String                   sequence1, sequence2;
+        String[]                 inputFile;
 
         inputFileName  = "input.txt";
         outputFileName = "output.txt";
@@ -64,13 +65,13 @@ public class Main
         System.out.println("Initialized AlignmentChecker");
 
         startTime        = System.currentTimeMillis();
-        optimalAlignment = alignmentChecker.checkAlignment(sequence1, sequence2);
+        results          = alignmentChecker.checkAlignment(sequence1, sequence2);
         endTime          = System.currentTimeMillis();
 
         System.out.println("Calculated optimal alignment");
         System.out.println("Time taken (ms):  " + (endTime - startTime));
 
-        printToOutputFile(outputFileName, optimalAlignment);
+        printToOutputFile(outputFileName, results);
 
         System.out.println("Printed results to " + outputFileName);
         System.out.println("End");
@@ -113,14 +114,14 @@ public class Main
      * @param alignmentData a String[] with the optimal alignment data
      * @throws IllegalArgumentException throws exception if output file was not found or was unable to be written to
      */
-    private static void printToOutputFile(String outputFileName, String[] alignmentData) throws IllegalArgumentException
+    private static void printToOutputFile(String outputFileName, AlignmentChecker.Results alignmentData)
+            throws IllegalArgumentException
     {
         try (PrintStream outputFileWriter = new PrintStream(outputFileName))
         {
-            for (String line : alignmentData)
-            {
-                outputFileWriter.println(line);
-            }
+            outputFileWriter.println(alignmentData.alignmentScore);
+            outputFileWriter.println(alignmentData.sequence1);
+            outputFileWriter.println(alignmentData.sequence2);
         }
         catch (FileNotFoundException caught)
         {
