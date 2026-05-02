@@ -26,9 +26,9 @@ public class CLI
         System.out.println("Welcome to the Sequence Alignment Calculator!");
         System.out.println("This program takes two DNA sequences and determines their optimal alignment.\n");
 
-        while (running)
+        try (Scanner keyboard = new Scanner(System.in))
         {
-            try (Scanner keyboard = new Scanner(System.in))
+            while (running)
             {
                 System.out.println("Use the following characters to enter your sequences: A, T, G, & C");
 
@@ -48,16 +48,16 @@ public class CLI
 
                 System.out.println("\nIf you would like to use custom modifiers, enter them below");
                 System.out.print("Match bonus (default 1):  ");
-                userInput        = keyboard.nextLine().trim();
-                matchBonus       = userInput.isBlank() ? 1 : Integer.parseInt(userInput);
+                userInput       = keyboard.nextLine().trim();
+                matchBonus      = userInput.isBlank() ? 1 : Integer.parseInt(userInput);
 
                 System.out.print("Mismatch penalty (default -1):  ");
-                userInput        = keyboard.nextLine().trim();
-                mismatchPenalty  = userInput.isBlank() ? -1 : Integer.parseInt(userInput);
+                userInput       = keyboard.nextLine().trim();
+                mismatchPenalty = userInput.isBlank() ? -1 : Integer.parseInt(userInput);
 
                 System.out.print("Gap penalty (default -2):  ");
-                userInput        = keyboard.nextLine().trim();
-                gapPenalty       = userInput.isBlank() ? -2 : Integer.parseInt(userInput);
+                userInput       = keyboard.nextLine().trim();
+                gapPenalty      = userInput.isBlank() ? -2 : Integer.parseInt(userInput);
 
                 System.out.println();
 
@@ -70,28 +70,24 @@ public class CLI
 
                 printAlignmentTable(sequence1, sequence2, results.alignmentData());
 
-                System.out.println("\nCalculation Time (ns):  " + (endTime - startTime));
-                System.out.println("Alignment Score:  " + results.alignmentScore());
-                System.out.println("Sequence 1:  " + results.sequence1());
-                System.out.println("Sequence 2:  " + results.sequence2());
+                System.out.println();
+                System.out.println("Calculation Time (ns):  " + (endTime - startTime));
+                printResults(results);
                 System.out.println();
 
                 System.out.print("Would you like to check more sequences? (y/n):  ");
 
-                switch (keyboard.nextLine().trim())
-                {
-                    case "Y", "y" -> System.out.println();
-                    case "N", "n" -> running = false;
-                    default       -> System.out.print("Would you like to check more sequences? (y/n):  ");
+                userInput = keyboard.nextLine().trim().toUpperCase();
+
+                if (userInput.isBlank() || userInput.charAt(0) != 'Y') {
+                    running = false;
                 }
             }
-            catch (Exception caught)
-            {
-                System.out.println("An error has occurred  " + caught.getMessage());
-
-                running = false;
-            }
-        } // end while
+        }
+        catch (Exception caught)
+        {
+            System.out.println("An error has occurred  " + caught.getMessage());
+        }
 
         System.out.println("\nThank you for using this program :)");
     }
@@ -138,5 +134,16 @@ public class CLI
             System.out.println();
             idx++;
         }
+    }
+
+    /**
+     * prints the results of the alignment check
+     * @param results results
+     */
+    private static void printResults(AlignmentChecker.Results results)
+    {
+        System.out.println("Alignment Score:  " + results.alignmentScore());
+        System.out.println("Sequence 1:  " + results.sequence1());
+        System.out.println("Sequence 2:  " + results.sequence2());
     }
 }
