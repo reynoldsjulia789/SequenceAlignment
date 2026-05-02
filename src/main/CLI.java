@@ -24,13 +24,13 @@ public class CLI
         running = true;
 
         System.out.println("Welcome to the Sequence Alignment Calculator!");
-        System.out.println("This program takes two DNA sequences and determines their optimal alignment.\n");
+        System.out.println("This program takes two DNA sequences and determines their optimal alignment.");
 
         try (Scanner keyboard = new Scanner(System.in))
         {
             while (running)
             {
-                System.out.println("Use the following characters to enter your sequences: A, T, G, & C");
+                System.out.println("\nUse the following characters to enter your sequences: A, T, G, & C");
 
                 do
                 {
