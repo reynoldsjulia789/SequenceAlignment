@@ -1,4 +1,4 @@
-package main;
+package main.model;
 
 /**
  * Checks the alignment of two DNA sequences

@@ -1,6 +1,6 @@
 package test;
 
-import main.AlignmentChecker;
+import main.model.AlignmentChecker;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

@@ -1,4 +1,6 @@
-package main;
+package main.view;
+
+import main.model.AlignmentChecker;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -8,10 +10,10 @@ import java.util.Scanner;
 /**
  * Handles reading from the input file, calling the AlignmentChecker methods, and writing to the output file
  */
-public class Main
+public class FileReader
 {
     /**
-     * Main method.
+     * FileReader method.
      * <p>
      * Executes the appropriate methods to determine the optimal alignment of two DNA sequences.
      * </p>
@@ -39,7 +41,7 @@ public class Main
     {
         int                      matchBonus, mismatchPenalty, gapPenalty;
         long                     startTime, endTime;
-        AlignmentChecker         alignmentChecker;
+        AlignmentChecker alignmentChecker;
         AlignmentChecker.Results results;
         String                   inputFileName, outputFileName;
         String                   sequence1, sequence2;

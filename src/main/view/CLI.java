@@ -1,10 +1,12 @@
-package main;
+package main.view;
+
+import main.model.AlignmentChecker;
 
 import java.util.Scanner;
 
 /**
  * Command Line Interface for Sequence Alignment Calculator
- * Either this or Main can be used.
+ * Either this or FileReader can be used.
  */
 public class CLI
 {
@@ -17,7 +19,7 @@ public class CLI
         boolean                  running;
         int                      matchBonus, mismatchPenalty, gapPenalty;
         long                     startTime, endTime;
-        AlignmentChecker         alignmentChecker;
+        AlignmentChecker alignmentChecker;
         AlignmentChecker.Results results;
         String                   sequence1, sequence2, userInput;
 
