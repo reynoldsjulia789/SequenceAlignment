@@ -39,7 +39,7 @@ public class AlignmentChecker
      * Checks the alignment of two DNA sequences
      * @param sequence1 the first DNA sequence
      * @param sequence2 the second DNA sequence
-     * @throws IllegalArgumentException throws exception if one or both sequences are null or blank
+     * @throws IllegalArgumentException throws exception if one or both sequences are null
      * @return returns the alignment score and the two DNA sequences with gaps inserted in the appropriate places to
      * create the alignment score
      */
