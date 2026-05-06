@@ -1,12 +1,9 @@
-package test;
-
 import main.AlignmentChecker;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class AlignmentCheckerTest
 {
@@ -156,11 +153,26 @@ public class AlignmentCheckerTest
         public void testEmpty()
         {
             AlignmentChecker         test;
+            AlignmentChecker.Results results;
 
             test    = new AlignmentChecker();
+            results = test.checkAlignment("ACGT", " ");
 
-            assertThrows(Exception.class, () -> test.checkAlignment("ACGT", " "));
-            assertThrows(Exception.class, () -> test.checkAlignment(" ", "ACGT"));
+            assertEquals(0, results.alignmentScore());
+            assertEquals("", results.sequence2());
+            assertEquals("ACGT", results.sequence1());
+
+            results = test.checkAlignment(" ", "ACGT");
+
+            assertEquals(0, results.alignmentScore());
+            assertEquals("", results.sequence1());
+            assertEquals("ACGT", results.sequence2());
+
+            results = test.checkAlignment(" ", "  ");
+
+            assertEquals(0, results.alignmentScore());
+            assertEquals("", results.sequence1());
+            assertEquals("", results.sequence2());
         }
 
         @Test
@@ -178,6 +190,28 @@ public class AlignmentCheckerTest
             results = test.checkAlignment(" ACGT ", "ACGT");
 
             assertEquals("ACGT", results.sequence1(), "Sequence 1");
+        }
+
+        @Test
+        @DisplayName("finds best alignment of AGCGA and ACGAA with negative match and positive gap and mismatch")
+        public void testNegMatch()
+        {
+            AlignmentChecker         test;
+            AlignmentChecker.Results results;
+
+            test    = new AlignmentChecker(-5, 2, 3);
+            results = test.checkAlignment("AGCGA", "ACGAA");
+
+            assertEquals(30, results.alignmentScore(), "Alignment Score (Match: -5, Mismatch: 2, Gap: 3)");
+            assertEquals("AGCGA-----", results.sequence1(), "Sequence 1 (Match: -5, Mismatch: 2, Gap: 3)");
+            assertEquals("-----ACGAA", results.sequence2(), "Sequence 2 (Match: -5, Mismatch: 2, Gap: 3)");
+
+            test    = new AlignmentChecker(-1, 2, 0);
+            results = test.checkAlignment("AGCGA", "ACGAA");
+
+            assertEquals(6, results.alignmentScore(), "Alignment Score (Match: -1, Mismatch: 2, Gap: 0)");
+            assertEquals("AGCGA--", results.sequence1(), "Sequence 1 (Match: -1, Mismatch: 2, Gap: 0)");
+            assertEquals("--ACGAA", results.sequence2(), "Sequence 2 (Match: -1, Mismatch: 2, Gap: 0)");
         }
     }
 }

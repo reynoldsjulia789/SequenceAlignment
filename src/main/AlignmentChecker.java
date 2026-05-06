@@ -49,13 +49,18 @@ public class AlignmentChecker
         String[] updatedSequences;
         Cell[][] alignment;
 
-        if (sequence1 == null || sequence2 == null || sequence1.isBlank() || sequence2.isBlank())
+        if (sequence1 == null || sequence2 == null)
         {
-            throw new IllegalArgumentException("AlignmentChecker: can't align null or blank sequence");
+            throw new IllegalArgumentException("AlignmentChecker: can't align null sequence(s)");
         }
 
         sequence1        = sequence1.trim();
         sequence2        = sequence2.trim();
+
+        if (sequence1.isBlank() || sequence2.isBlank())
+        {
+            return new Results(0, sequence1, sequence2, null);
+        }
 
         sequence1Length  = sequence1.length();
         sequence2Length  = sequence2.length();
