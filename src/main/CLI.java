@@ -47,15 +47,15 @@ public class CLI
                 while (sequence2.isBlank());
 
                 System.out.println("\nIf you would like to use custom modifiers, enter them below");
-                System.out.print("Match bonus (default 1):  ");
+                System.out.print("    Match (default 1):  ");
                 userInput       = keyboard.nextLine().trim();
                 matchBonus      = userInput.isBlank() ? 1 : Integer.parseInt(userInput);
 
-                System.out.print("Mismatch penalty (default -1):  ");
+                System.out.print("Mismatch (default -1):  ");
                 userInput       = keyboard.nextLine().trim();
                 mismatchPenalty = userInput.isBlank() ? -1 : Integer.parseInt(userInput);
 
-                System.out.print("Gap penalty (default -2):  ");
+                System.out.print("     Gap (default -2):  ");
                 userInput       = keyboard.nextLine().trim();
                 gapPenalty      = userInput.isBlank() ? -2 : Integer.parseInt(userInput);
 
