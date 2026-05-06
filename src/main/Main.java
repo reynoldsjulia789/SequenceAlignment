@@ -48,11 +48,11 @@ public class Main
         inputFileName  = "src/main/textFiles/input.txt";
         outputFileName = "src/main/textFiles/output.txt";
 
-        System.out.println("Start");
+        System.out.println("Start\n");
 
         inputFile = readInputFile(inputFileName);
 
-        System.out.println("Successfully read input file");
+        System.out.println("Successfully read input file\n");
 
         sequence1        = inputFile[0].trim().toUpperCase();
         sequence2        = inputFile[1].trim().toUpperCase();
@@ -60,37 +60,32 @@ public class Main
         mismatchPenalty  = Integer.parseInt(inputFile[3].trim());
         gapPenalty       = Integer.parseInt(inputFile[4].trim());
 
+        System.out.println("Sequence 1:  " + sequence1);
+        System.out.println("Sequence 2:  " + sequence2);
+        System.out.println("     Match:  " + matchBonus);
+        System.out.println("  Mismatch:  " + mismatchPenalty);
+        System.out.println("       Gap:  " + gapPenalty);
+
         alignmentChecker = new AlignmentChecker(matchBonus, mismatchPenalty, gapPenalty);
 
-        System.out.println("Initialized AlignmentChecker");
+        System.out.println("\nInitialized AlignmentChecker");
 
-        startTime        = System.currentTimeMillis();
+        startTime        = System.nanoTime();
         results          = alignmentChecker.checkAlignment(sequence1, sequence2);
-        endTime          = System.currentTimeMillis();
+        endTime          = System.nanoTime();
 
-        System.out.println("Calculated optimal alignment: " + results.alignmentScore());
+        System.out.println("\nCalculated optimal alignment\n");
 
-        // Print Alignment
-        for (AlignmentChecker.Cell[] row : results.alignmentData())
-        {
-            for (AlignmentChecker.Cell cell : row)
-            {
-                System.out.print(cell.toString());
-                System.out.print("\t");
-            }
+        System.out.println("Sequence 1:  " + results.sequence1());
+        System.out.println("Sequence 2:  " + results.sequence2());
+        System.out.println("     Score:  " + results.alignmentScore());
 
-            System.out.println();
-        }
-
-        System.out.println(results.sequence1());
-        System.out.println(results.sequence2());
-
-        System.out.println("Time taken (ms):  " + (endTime - startTime));
+        System.out.println("\nTime taken (s):  " + ((endTime - startTime) / Math.pow(10, 9)));
 
         printToOutputFile(outputFileName, results);
 
-        System.out.println("Printed results to " + outputFileName);
-        System.out.println("End");
+        System.out.println("\nPrinted results to " + outputFileName);
+        System.out.println("\nEnd");
     }
 
     /** TODO Eventually: Verify correct input file formatting while reading
